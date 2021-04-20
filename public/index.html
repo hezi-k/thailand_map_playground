@@ -49,7 +49,7 @@ function createMap(mapData, coordinates) {
 
     let proj = d3.geoMercator()
         .translate([250, 250])
-        .scale(2000)
+        .scale(1500)
         .rotate([-100.6331, -13.2])
 
     let path = d3.geoPath()
@@ -69,7 +69,7 @@ function createMap(mapData, coordinates) {
          .data(coordinates)
          .enter()
          .append("circle")
-             .attr("r", 3)
+             .attr("r", 1)
              .attr("cx", d => proj([+d.longitude, +d.latitude])[0])
              .attr("cy", d => proj([+d.longitude, +d.latitude])[1])
              .attr("stroke-width", 1)
