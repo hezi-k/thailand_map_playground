@@ -4,8 +4,8 @@
     <meta charset="utf-8" />
     <title>Thailand Map Data Visualisation</title>
 
-    <!--<script src="https://d3js.org/d3.v6.min.js"></script> -->
-    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script src="https://d3js.org/d3.v6.min.js"></script>
+    <!-- <script src="https://d3js.org/d3.v3.min.js"></script> -->
     <script src="https://d3js.org/d3-geo-projection.v3.min.js"></script>
     <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
     <script src="js/map.js"></script>
@@ -36,27 +36,40 @@ let width = 960,
 
 // Promise format does not work with d3 version 3
 Promise.all([
+    console.log("Checkpoint 7"),
     d3.json("thailand.json"),
     d3.csv("coordinatesJan28.csv")
 ]).then( ([mapData ,coordinates]) => {
+    //console.log("Checkpoint 8"),
     createMap(mapData, coordinates)
 })
 
+console.log("Checkpoint 1");
+
+/*
 var map = new L.Map("map", {center: [13.7, 100.5], zoom: 5})
     .addLayer(new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"));
 
+console.log("Checkpoint 2");
 var svg = d3.select(map.getPanes().overlayPane).append("svg"),
     g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
+console.log("Checkpoint 3");
 d3.json("thailand.json", function(error, collection) {
+    console.log("Checkpoint 4");
     if(error) throw error;
 
+    console.log("Checkpoint 5");
     var transform = d3.geo.transform({point: projectPoint}),
+        // path = d3.geo.path().projection(transform);
         path = d3.geo.path().projection(transform);
 
     var feature = g.selectAll("path")
         .data(collection.features)
         .enter().append("path");
+
+
+
 
     map.on("viewreset", reset);
     reset();
@@ -87,16 +100,16 @@ d3.json("thailand.json", function(error, collection) {
     }
 
 });
-
+*/
 
 function createMap(mapData, coordinates) {
 
-
+    console.log("Checkpoint 6");
 
     console.log(mapData)
     console.log(coordinates)
 
-    /*var svg = d3.select("body").append("svg")
+    var svg = d3.select("body").append("svg")
         .attr("width", width)
         .attr("height", height);
 
@@ -124,7 +137,7 @@ function createMap(mapData, coordinates) {
             .attr("stroke", "#ffffff")
             .attr("fill", d => "blue");
 
-*/
+
          /*THIS PUTS THE DOTS ON THE MAP
      circleLayer.selectAll("circle")
          .data(coordinates)
