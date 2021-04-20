@@ -4,12 +4,22 @@
     <meta charset="utf-8" />
     <title>Thailand Map Data Visualisation</title>
 
-    <script src="https://d3js.org/d3.v6.min.js"></script>
-<!--    <script src="https://d3js.org/d3.v3.min.js"></script> -->
+    <!--<script src="https://d3js.org/d3.v6.min.js"></script> -->
+    <script src="https://d3js.org/d3.v3.min.js"></script>
     <script src="https://d3js.org/d3-geo-projection.v3.min.js"></script>
+    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
     <script src="js/map.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <style>
+        #map {
+            width: 960px;
+            height: 700px;
+        }
+    </style>
 </head>
 <body>
+
+<div id="map"></div>
 
 <svg></svg>
 
@@ -23,20 +33,70 @@ let width = 960,
     height = 700,
     centered;
 
+
 // Promise format does not work with d3 version 3
 Promise.all([
     d3.json("thailand.json"),
-    d3.csv("coordinates.csv")
+    d3.csv("coordinatesJan28.csv")
 ]).then( ([mapData ,coordinates]) => {
     createMap(mapData, coordinates)
 })
 
+var map = new L.Map("map", {center: [13.7, 100.5], zoom: 5})
+    .addLayer(new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"));
+
+var svg = d3.select(map.getPanes().overlayPane).append("svg"),
+    g = svg.append("g").attr("class", "leaflet-zoom-hide");
+
+d3.json("thailand.json", function(error, collection) {
+    if(error) throw error;
+
+    var transform = d3.geo.transform({point: projectPoint}),
+        path = d3.geo.path().projection(transform);
+
+    var feature = g.selectAll("path")
+        .data(collection.features)
+        .enter().append("path");
+
+    map.on("viewreset", reset);
+    reset();
+
+    function reset() {
+        var bounds = path.bounds(collection),
+            topLeft = bounds[0],
+            bottomRight = bounds[1];
+
+        svg .attr("width", bottomRight[0] - topLeft[0])
+            .attr("height", bottomRight[1] - topLeft[1])
+            .style("left", topLeft[0] + "px")
+            .style("top", topLeft[1] + "px")
+            .attr("d", function(d) { return path(d) })
+            .attr("stroke-width", 2)
+            .attr("stroke", "blue")
+            .attr("fill", d => "transparent");;
+
+        g   .attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+
+        feature.attr("d", path);
+    }
+
+
+    function projectPoint(x, y) {
+        var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+        this.stream.point(point.x, point.y);
+    }
+
+});
+
+
 function createMap(mapData, coordinates) {
+
+
 
     console.log(mapData)
     console.log(coordinates)
 
-    var svg = d3.select("body").append("svg")
+    /*var svg = d3.select("body").append("svg")
         .attr("width", width)
         .attr("height", height);
 
@@ -64,7 +124,8 @@ function createMap(mapData, coordinates) {
             .attr("stroke", "#ffffff")
             .attr("fill", d => "blue");
 
-
+*/
+         /*THIS PUTS THE DOTS ON THE MAP
      circleLayer.selectAll("circle")
          .data(coordinates)
          .enter()
@@ -75,6 +136,8 @@ function createMap(mapData, coordinates) {
              .attr("stroke-width", 1)
              .attr("stroke", "#4F442B")
              .attr("fill", function() { return "#FFD061" });
+
+*/
 
 //    d3.csv("coordinates.csv", function(fireData) {
 //        console.log(fireData)
@@ -104,6 +167,8 @@ function createMap(mapData, coordinates) {
     //         .style("fill", function() { return "#FFD061" });
 
 }
+
+
 
 
 </script>
