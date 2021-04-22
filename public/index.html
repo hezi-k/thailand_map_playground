@@ -80,7 +80,11 @@
 
             var feature2 = g.selectAll("circle")
                 .data(coordinates)
-                .enter().append("circle");
+                .enter().append("circle")
+                .attr("r", 3)
+                .attr("stroke-width", 1)
+                .attr("stroke", "#4F442B")
+                .attr("fill", function() { return "#FFD061" });
 
 
             map.on("viewreset", reset);
@@ -114,6 +118,12 @@
                     .on("mouseout", function(d) {
                         d3.select(this).style("fill", d => "transparent");
                     });
+
+                feature2.attr("transform", function(d) {
+                    return "translate(" +
+                        map.latLngToLayerPoint(d.LatLng).x +","+
+                        map.latLngToLayerPoint(d.LatLng).y +")";
+                });
 
 
             }
