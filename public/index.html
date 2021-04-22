@@ -65,10 +65,12 @@
 
         console.log("Checkpoint 2");
         var svg = d3.select(map.getPanes().overlayPane).append("svg"),
-            g = svg.append("g").attr("class", "leaflet-zoom-hide");
+            g = svg.append("g").attr("class", "leaflet-zoom-hide"),
+            g1 = svg.append("g").attr("class", "circle-layer");
 
-        var circleLayer = d3.select(map.getPanes().overlayPane).append("g").attr("class", "circle-layer");
-
+        /*var circleLayer = d3.select(map.getPanes().overlayPane).append("g")
+            g = circle.attr("class", "circle-layer");
+        */
 
 
         var transform = d3.geoTransform({point: projectPoint}),
@@ -78,11 +80,11 @@
                 .data(mapData.features)
                 .enter().append("path");
 
-            var feature2 = g.selectAll("circle")
+            var feature2 = g1.selectAll("circle")
                 .data(coordinates)
                 .enter().append("circle");
 
-            console.log("next is latitude");
+           /* console.log("next is latitude");
             console.log(coordinates[0].latitude);
         console.log("next is length");
         console.log(coordinates.length);
@@ -93,7 +95,12 @@
                 radius: 3
             }).addTo(map);
         }
+*/
 
+        var circleMarker = L.circleMarker([coordinates[0].latitude, coordinates[0].longitude], {
+                color: "red",
+                radius: 3
+            }).addTo(map);
 
 
             map.on("viewreset", reset);
@@ -116,14 +123,19 @@
                     .attr("stroke", "blue")
                     .attr("fill", "transparent");
 
-                circleLayer.attr("r", 3)
+                /*circleLayer.attr("r", 3)
                     .attr("stroke-width", 1)
                     .attr("stroke", "#4F442B")
-                    .attr("fill", function() { return "#FFD061" });
-
+                    .attr("fill", function() { return "#FFD061" })
+                .attr("cx", 50)
+                    .attr("cy", 50);
+*/
 
 
                 g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+
+
+
 
                 feature.attr("d", path)
                     .on("mouseover", function(d) {
@@ -132,6 +144,26 @@
                     .on("mouseout", function(d) {
                         d3.select(this).style("fill", d => "transparent");
                     });
+
+                /*THIS PRINTS ALL THE DOTS
+                feature2.attr("r", 3)
+                    .attr("stroke-width", 1)
+                    .attr("stroke", "#4F442B")
+                    .attr("fill", function() { return "#FFD061" })
+                    .attr("cx", d => [+d.latitude])
+                    .attr("cy", d => [+d.longitude]);
+                    */
+
+                feature2.attr("r", 3)
+                    .attr("stroke-width", 1)
+                    .attr("stroke", "#4F442B")
+                    .attr("fill", function() { return "#FFD061" })
+                    .attr("cx", -1.397)
+                    .attr("cy", 120.755);
+
+
+                /*feature2.attr("cx", 50)
+                    .attr("cy", 50);*/
 
                 /*feature2.attr("transform", function(d) {
                     return "translate(" +
