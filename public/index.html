@@ -67,7 +67,7 @@
         var svg = d3.select(map.getPanes().overlayPane).append("svg"),
             g = svg.append("g").attr("class", "leaflet-zoom-hide");
 
-        var cirleLayer = d3.select(map.getPanes().overlayPane).append("g").attr("class", "circle-layer");
+        var circleLayer = d3.select(map.getPanes().overlayPane).append("g").attr("class", "circle-layer");
 
 
 
@@ -80,11 +80,20 @@
 
             var feature2 = g.selectAll("circle")
                 .data(coordinates)
-                .enter().append("circle")
-                .attr("r", 3)
-                .attr("stroke-width", 1)
-                .attr("stroke", "#4F442B")
-                .attr("fill", function() { return "#FFD061" });
+                .enter().append("circle");
+
+            console.log("next is latitude");
+            console.log(coordinates[0].latitude);
+        console.log("next is length");
+        console.log(coordinates.length);
+        var i;
+        for(i = 0; i < coordinates.length; i++) {
+            var circleMarker = L.circleMarker([coordinates[i].latitude, coordinates[i].longitude], {
+                color: "red",
+                radius: 3
+            }).addTo(map);
+        }
+
 
 
             map.on("viewreset", reset);
@@ -107,6 +116,11 @@
                     .attr("stroke", "blue")
                     .attr("fill", "transparent");
 
+                circleLayer.attr("r", 3)
+                    .attr("stroke-width", 1)
+                    .attr("stroke", "#4F442B")
+                    .attr("fill", function() { return "#FFD061" });
+
 
 
                 g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
@@ -119,11 +133,11 @@
                         d3.select(this).style("fill", d => "transparent");
                     });
 
-                feature2.attr("transform", function(d) {
+                /*feature2.attr("transform", function(d) {
                     return "translate(" +
                         map.latLngToLayerPoint(d.LatLng).x +","+
                         map.latLngToLayerPoint(d.LatLng).y +")";
-                });
+                });*/
 
 
             }
