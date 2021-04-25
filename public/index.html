@@ -81,17 +81,50 @@
                 .enter().append("path");
 
 
-
-            var feature2 = g1.selectAll("circle")
+            var circleArray = new Array(coordinates.length);
+            console.log(coordinates.length + "coordinates.length");
+            var test = g1.selectAll("circle")
                 .data(coordinates)
-                .enter().append("circle")
-                .attr("r", 3)
-                .attr("stroke-width", 1)
-                .attr("stroke", "#4F442B")
-                .attr("fill", function() { return "#FFD061" })
-                .attr("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[0].latitude, coordinates[0].longitude)).x)
-                .attr("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[0].latitude, coordinates[0].longitude)).y);
+                .enter().append("circle");
+            testnodes = test.nodes();
 
+            const allCircles = document.querySelectorAll(".circle-layer > circle");
+            //allCircles[0].classList.add("class" + 1);
+            console.log("next is selector");
+
+            var i;
+            for(i = 0; i < coordinates.length; i++) {
+                allCircles[i].classList.add("class" + i);
+                allCircles[i].setAttribute("r", 3)
+                allCircles[i].setAttribute("stroke-width", 1);
+                allCircles[i].setAttribute("stroke", "#4F442B");
+                allCircles[i].setAttribute("fill", "#FFD061");
+                //var xCoord = map.latLngToLayerPoint(new L.LatLng(coordinates[0].latitude, coordinates[0].longitude)).x;
+                allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
+                allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
+            }
+
+
+            /*for(i = 0; i < 5; i++) {
+                //var feature2 = g1.selectAll("circle")
+                //console.log("hi");
+                circleArray[i] = g1.selectAll("circle")
+                //allCircles[i].classList.add("class" + 1);
+                //allCircles[i].style.r = 3;
+
+                    //.data(coordinates)
+                    //.enter().append("circle")
+                    //.attr("class", "circle" + i)
+                    .attr("r", 3)
+                    .attr("stroke-width", 1)
+                    .attr("stroke", "#4F442B")
+                    .attr("fill", function () {
+                        return "#FFD061"
+                    })
+                    .attr("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x)
+                    .attr("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
+            }
+            */
            /* console.log("next is latitude");
             console.log(coordinates[0].latitude);
         console.log("next is length");
@@ -167,11 +200,15 @@
                     .attr("cy", d => [+d.longitude]);
                     */
 
-                feature2.attr("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[0].latitude, coordinates[0].longitude)).x)
-                    .attr("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[0].latitude, coordinates[0].longitude)).y);
-                    //.style("left", topLeft[0] + "px")
-                    //.style("top", topLeft[1] + "px");
+                for(i = 0; i < coordinates.length; i++) {
+                    allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
+                    allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
+                }
 
+                console.log("next is circle 1");
+                console.log(circleArray[0]);
+                console.log("next is circle w");
+                console.log(circleArray[1]);
 
                 /*feature2.attr("cx", 50)
                     .attr("cy", 50);*/
