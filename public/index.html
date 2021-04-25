@@ -80,9 +80,17 @@
                 .data(mapData.features)
                 .enter().append("path");
 
+
+
             var feature2 = g1.selectAll("circle")
                 .data(coordinates)
-                .enter().append("circle");
+                .enter().append("circle")
+                .attr("r", 3)
+                .attr("stroke-width", 1)
+                .attr("stroke", "#4F442B")
+                .attr("fill", function() { return "#FFD061" })
+                .attr("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[0].latitude, coordinates[0].longitude)).x)
+                .attr("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[0].latitude, coordinates[0].longitude)).y);
 
            /* console.log("next is latitude");
             console.log(coordinates[0].latitude);
@@ -97,10 +105,11 @@
         }
 */
 
-        var circleMarker = L.circleMarker([coordinates[0].latitude, coordinates[0].longitude], {
+        /*var circleMarker = L.circleMarker([coordinates[0].latitude, coordinates[0].longitude], {
                 color: "red",
                 radius: 3
             }).addTo(map);
+            */
 
 
             map.on("viewreset", reset);
@@ -112,8 +121,10 @@
                     topLeft = bounds[0],
                     bottomRight = bounds[1];
 
-                svg.attr("width", bottomRight[0] - topLeft[0])
-                    .attr("height", bottomRight[1] - topLeft[1])
+                svg.attr("width", 10000)
+                    .attr("height", 10000)
+                    //.attr("width", bottomRight[0] - topLeft[0])
+                    //.attr("height", bottomRight[1] - topLeft[1])
                     .style("left", topLeft[0] + "px")
                     .style("top", topLeft[1] + "px")
                     .attr("d", function (d) {
@@ -133,6 +144,8 @@
 
 
                 g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+
+                g1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")")
 
 
 
@@ -154,12 +167,10 @@
                     .attr("cy", d => [+d.longitude]);
                     */
 
-                feature2.attr("r", 3)
-                    .attr("stroke-width", 1)
-                    .attr("stroke", "#4F442B")
-                    .attr("fill", function() { return "#FFD061" })
-                    .attr("cx", -1.397)
-                    .attr("cy", 120.755);
+                feature2.attr("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[0].latitude, coordinates[0].longitude)).x)
+                    .attr("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[0].latitude, coordinates[0].longitude)).y);
+                    //.style("left", topLeft[0] + "px")
+                    //.style("top", topLeft[1] + "px");
 
 
                 /*feature2.attr("cx", 50)
