@@ -66,7 +66,7 @@
         console.log("Checkpoint 2");
         var svg = d3.select(map.getPanes().overlayPane).append("svg"),
             g = svg.append("g").attr("class", "leaflet-zoom-hide"),
-            g1 = svg.append("g").attr("class", "circle-layer");
+            g1 = d3.select(map.getPanes().overlayPane).append("svg").attr("class", "circle-layer");
 
         /*var circleLayer = d3.select(map.getPanes().overlayPane).append("g")
             g = circle.attr("class", "circle-layer");
@@ -99,11 +99,12 @@
                 allCircles[i].setAttribute("stroke-width", 1);
                 allCircles[i].setAttribute("stroke", "#4F442B");
                 allCircles[i].setAttribute("fill", "#FFD061");
-                //var xCoord = map.latLngToLayerPoint(new L.LatLng(coordinates[0].latitude, coordinates[0].longitude)).x;
                 allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
                 allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
             }
 
+            g1.attr("width", 2000)
+            .attr("height", 2000);
 
             /*for(i = 0; i < 5; i++) {
                 //var feature2 = g1.selectAll("circle")
@@ -167,6 +168,12 @@
                     .attr("stroke", "blue")
                     .attr("fill", "transparent");
 
+                // THIS IS THE STYLE FOR THE CIRCLE LAYER
+                //g1.style("left", topLeft[0] + "px")
+                //    .style("top", topLeft[1] + "px");
+
+
+
                 /*circleLayer.attr("r", 3)
                     .attr("stroke-width", 1)
                     .attr("stroke", "#4F442B")
@@ -178,7 +185,7 @@
 
                 g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
 
-                g1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")")
+                //g1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")")
 
 
 
@@ -200,10 +207,17 @@
                     .attr("cy", d => [+d.longitude]);
                     */
 
+                const allCircles = document.querySelectorAll(".circle-layer > circle");
                 for(i = 0; i < coordinates.length; i++) {
                     allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
                     allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
+                    //allCircles[i].setAttribute("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+                    //allCircles[i].setAttribute("left", topLeft[0] + "px");
+                    //allCircles[i].setAttribute("top", topLeft[1] + "px");
+                    //allCircles[i].setAttribute("style", "left: " + topLeft[0] + "px; top: " + topLeft[1] + "px;");
                 }
+
+                style="left: 362px; top: 274px;"
 
                 console.log("next is circle 1");
                 console.log(circleArray[0]);
