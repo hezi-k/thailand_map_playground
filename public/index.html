@@ -54,101 +54,53 @@
 
     function test(mapData, coordinates) {
 
-        console.log("This is a test");
-        console.log(mapData)
-
-        console.log("Checkpoint 1");
-
 
         var map = new L.Map("map", {center: [13.7, 100.5], zoom: 5})
             .addLayer(new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"));
 
-        console.log("Checkpoint 2");
+        // Finds the overlayPane div and places 2 svgs inside. The second has a class name of "circle-layer"
+        // There is also a g div in the first svg with a name of "leaflet-zoom-hide"
         var svg = d3.select(map.getPanes().overlayPane).append("svg"),
             g = svg.append("g").attr("class", "leaflet-zoom-hide"),
             g1 = d3.select(map.getPanes().overlayPane).append("svg").attr("class", "circle-layer");
 
-        /*var circleLayer = d3.select(map.getPanes().overlayPane).append("g")
-            g = circle.attr("class", "circle-layer");
-        */
-
-
+        // This takes the path and fits the projection on it using the function below
         var transform = d3.geoTransform({point: projectPoint}),
             path = d3.geoPath().projection(transform);
 
-            var feature = g.selectAll("path")
-                .data(mapData.features)
-                .enter().append("path");
+        var feature = g.selectAll("path")
+            .data(mapData.features)
+            .enter().append("path");
 
+        // Creates all the circle elements in the circle-layer div
+        g1.selectAll("circle")
+            .data(coordinates)
+            .enter().append("circle");
 
-            var circleArray = new Array(coordinates.length);
-            console.log(coordinates.length + "coordinates.length");
-            var test = g1.selectAll("circle")
-                .data(coordinates)
-                .enter().append("circle");
-            testnodes = test.nodes();
+        // Selector. Selects all the circle elements in the circle-layer div
+        const allCircles = document.querySelectorAll(".circle-layer > circle");
+        //allCircles[0].classList.add("class" + 1);
+        console.log("next is selector");
 
-            const allCircles = document.querySelectorAll(".circle-layer > circle");
-            //allCircles[0].classList.add("class" + 1);
-            console.log("next is selector");
-
-            var i;
-            for(i = 0; i < coordinates.length; i++) {
-                allCircles[i].classList.add("class" + i);
-                allCircles[i].setAttribute("r", 3)
-                allCircles[i].setAttribute("stroke-width", 1);
-                allCircles[i].setAttribute("stroke", "#4F442B");
-                allCircles[i].setAttribute("fill", "#FFD061");
-                allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
-                allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
-            }
-
-            g1.attr("width", 2000)
-            .attr("height", 2000);
-
-            /*for(i = 0; i < 5; i++) {
-                //var feature2 = g1.selectAll("circle")
-                //console.log("hi");
-                circleArray[i] = g1.selectAll("circle")
-                //allCircles[i].classList.add("class" + 1);
-                //allCircles[i].style.r = 3;
-
-                    //.data(coordinates)
-                    //.enter().append("circle")
-                    //.attr("class", "circle" + i)
-                    .attr("r", 3)
-                    .attr("stroke-width", 1)
-                    .attr("stroke", "#4F442B")
-                    .attr("fill", function () {
-                        return "#FFD061"
-                    })
-                    .attr("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x)
-                    .attr("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
-            }
-            */
-           /* console.log("next is latitude");
-            console.log(coordinates[0].latitude);
-        console.log("next is length");
-        console.log(coordinates.length);
+        // Sets all the attributes for each circle element
         var i;
         for(i = 0; i < coordinates.length; i++) {
-            var circleMarker = L.circleMarker([coordinates[i].latitude, coordinates[i].longitude], {
-                color: "red",
-                radius: 3
-            }).addTo(map);
+            allCircles[i].classList.add("class" + i);
+            allCircles[i].setAttribute("r", 3)
+            allCircles[i].setAttribute("stroke-width", 1);
+            allCircles[i].setAttribute("stroke", "#4F442B");
+            allCircles[i].setAttribute("fill", "#FFD061");
+            allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
+            allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
         }
-*/
 
-        /*var circleMarker = L.circleMarker([coordinates[0].latitude, coordinates[0].longitude], {
-                color: "red",
-                radius: 3
-            }).addTo(map);
-            */
+        g1.attr("width", 2000)
+        .attr("height", 2000);
 
+        map.on("viewreset", reset);
+        reset();
 
-            map.on("viewreset", reset);
-            reset();
-
+            // This function runs on zoom. It needs to redraw the path and dots and set the svg sizes
             function reset() {
                 console.log("Starting reset");
                 var bounds = path.bounds(mapData),
@@ -172,23 +124,9 @@
                 //g1.style("left", topLeft[0] + "px")
                 //    .style("top", topLeft[1] + "px");
 
-
-
-                /*circleLayer.attr("r", 3)
-                    .attr("stroke-width", 1)
-                    .attr("stroke", "#4F442B")
-                    .attr("fill", function() { return "#FFD061" })
-                .attr("cx", 50)
-                    .attr("cy", 50);
-*/
-
-
                 g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
 
                 //g1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")")
-
-
-
 
                 feature.attr("d", path)
                     .on("mouseover", function(d) {
@@ -198,42 +136,11 @@
                         d3.select(this).style("fill", d => "transparent");
                     });
 
-                /*THIS PRINTS ALL THE DOTS
-                feature2.attr("r", 3)
-                    .attr("stroke-width", 1)
-                    .attr("stroke", "#4F442B")
-                    .attr("fill", function() { return "#FFD061" })
-                    .attr("cx", d => [+d.latitude])
-                    .attr("cy", d => [+d.longitude]);
-                    */
-
                 const allCircles = document.querySelectorAll(".circle-layer > circle");
                 for(i = 0; i < coordinates.length; i++) {
                     allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
                     allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
-                    //allCircles[i].setAttribute("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
-                    //allCircles[i].setAttribute("left", topLeft[0] + "px");
-                    //allCircles[i].setAttribute("top", topLeft[1] + "px");
-                    //allCircles[i].setAttribute("style", "left: " + topLeft[0] + "px; top: " + topLeft[1] + "px;");
                 }
-
-                style="left: 362px; top: 274px;"
-
-                console.log("next is circle 1");
-                console.log(circleArray[0]);
-                console.log("next is circle w");
-                console.log(circleArray[1]);
-
-                /*feature2.attr("cx", 50)
-                    .attr("cy", 50);*/
-
-                /*feature2.attr("transform", function(d) {
-                    return "translate(" +
-                        map.latLngToLayerPoint(d.LatLng).x +","+
-                        map.latLngToLayerPoint(d.LatLng).y +")";
-                });*/
-
-
             }
 
 
