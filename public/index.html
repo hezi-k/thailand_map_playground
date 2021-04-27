@@ -83,15 +83,18 @@
         console.log("next is selector");
 
         // Sets all the attributes for each circle element
-        var i;
-        for(i = 0; i < coordinates.length; i++) {
-            allCircles[i].classList.add("class" + i);
-            allCircles[i].setAttribute("r", 3)
-            allCircles[i].setAttribute("stroke-width", 1);
-            allCircles[i].setAttribute("stroke", "#4F442B");
-            allCircles[i].setAttribute("fill", "#FFD061");
-            allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
-            allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
+        for(var i = 0; i < coordinates.length; i++) {
+            if(coordinates[i].latitude > 5 && coordinates[i].latitude < 20) {
+                if (coordinates[i].longitude > 98 && coordinates[i].longitude < 105) {
+                    allCircles[i].classList.add("class" + i);
+                    allCircles[i].setAttribute("r", 3)
+                    allCircles[i].setAttribute("stroke-width", 1);
+                    allCircles[i].setAttribute("stroke", "#4F442B");
+                    allCircles[i].setAttribute("fill", "#FFD061");
+                    allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
+                    allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
+                }
+            }
         }
 
         g1.attr("width", 2000)
@@ -138,8 +141,8 @@
 
                 const allCircles = document.querySelectorAll(".circle-layer > circle");
                 for(i = 0; i < coordinates.length; i++) {
-                    allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
-                    allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
+                            allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
+                            allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
                 }
             }
 
@@ -191,7 +194,7 @@ function createMap(mapData, coordinates) {
             .attr("fill", d => "blue");
 
 
-         //THIS PUTS THE DOTS ON THE MAP
+    //THIS PUTS THE DOTS ON THE MAP
      circleLayer.selectAll("circle")
          .data(coordinates)
          .enter()
