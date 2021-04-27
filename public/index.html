@@ -42,16 +42,17 @@
         ),
         d3.csv("coordinatesJan28.csv")
     ]).then( ([mapData ,coordinates]) => {
+        coordBox(coordinates),
         createMap(mapData, coordinates),
             test(mapData, coordinates),
-            callback(),
-            coordBox(coordinates)
+            callback()
+
     })
 
 
     function coordBox(coordinates) {
 
-        console.log("min in a something: " + d3.min(coordinates, function(d) { return d.latitude; }));
+        console.log("min in a something: " + d3.min(coordinates, function(d) { return parseFloat(d.latitude); }));
 
         var minLatSoFar = coordinates[0].latitude,
             maxLatSoFar = coordinates[0].latitude,
@@ -136,6 +137,48 @@
 
         svg1.attr("width", 2000)
         .attr("height", 2000);
+
+
+
+///******************************************************
+        var minLatSoFar = coordinates[0].latitude,
+            maxLatSoFar = coordinates[0].latitude,
+            minLongSoFar = coordinates[0].longitude,
+            maxLongSoFar = coordinates[0].longitude;
+
+        console.log("first one " + minLatSoFar);
+
+        var i;
+        for(i = 0; i < coordinates.length; i++) {
+            if(parseInt(coordinates[i].latitude) < minLatSoFar) {
+                console.log("i: " + i + ": " + minLatSoFar);
+                minLatSoFar = coordinates[i].latitude;
+                console.log("i2: " + i + ": " + minLatSoFar);
+            }
+            if(parseInt(coordinates[i].latitude) > maxLatSoFar) {
+                maxLatSoFar = coordinates[i].latitude;
+            }
+            if(parseInt(coordinates[i].longitude) < minLongSoFar) {
+                minLongSoFar = coordinates[i].longitude;
+            }
+            if(parseInt(coordinates[i].longitude) > maxLongSoFar) {
+                maxLongSoFar = coordinates[i].longitude;
+            }
+        }
+
+
+
+
+
+        //var minLat = d3.min(coordinates, function(d) { return parse(d.latitude); }),
+        //    maxLat = d3.max(coordinates, function(d) { return parseInt(d.latitude); }),
+        //    minLong = d3.min(coordinates, function(d) { return parseInt(d.longitude); }),
+        //    maxLong = d3.max(coordinates, function(d) { return parseInt(d.longitude); });
+
+        var latlngs = [[minLatSoFar, minLongSoFar], [maxLatSoFar, minLongSoFar], [maxLatSoFar, maxLongSoFar], [minLatSoFar, maxLongSoFar]];
+        var polygon = L.polygon(latlngs, {color: 'red'}).addTo(map);
+
+//******************************************************
 
         map.on("viewreset", reset);
         reset();
