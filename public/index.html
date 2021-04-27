@@ -44,9 +44,45 @@
     ]).then( ([mapData ,coordinates]) => {
         createMap(mapData, coordinates),
             test(mapData, coordinates),
-            callback()
+            callback(),
+            coordBox(coordinates)
     })
 
+
+    function coordBox(coordinates) {
+
+        console.log("min in a something: " + d3.min(coordinates, function(d) { return d.latitude; }));
+
+        var minLatSoFar = coordinates[0].latitude,
+            maxLatSoFar = coordinates[0].latitude,
+            minLongSoFar = coordinates[0].longitude,
+            maxLongSoFar = coordinates[0].longitude;
+
+        console.log("first one " + minLatSoFar);
+
+        var i;
+        for(i = 0; i < coordinates.length; i++) {
+            if(parseInt(coordinates[i].latitude) < minLatSoFar) {
+                console.log("i: " + i + ": " + minLatSoFar);
+                minLatSoFar = coordinates[i].latitude;
+                console.log("i2: " + i + ": " + minLatSoFar);
+            }
+            if(parseInt(coordinates[i].latitude) > maxLatSoFar) {
+                maxLatSoFar = coordinates[i].latitude;
+            }
+            if(parseInt(coordinates[i].longitude) < minLongSoFar) {
+                minLongSoFar = coordinates[i].longitude;
+            }
+            if(parseInt(coordinates[i].longitude) > maxLongSoFar) {
+                maxLongSoFar = coordinates[i].longitude;
+            }
+        }
+
+        console.log("minLat " + minLatSoFar); // -0.824
+        console.log("maxLat " + maxLatSoFar); // 9.558
+        console.log("minLong " + minLongSoFar); // 100.039
+        console.log("maxLong " + maxLongSoFar); // 99.995
+    }
 
     function callback() {
         console.log("This is the callback function");
@@ -62,7 +98,8 @@
         // There is also a g div in the first svg with a name of "leaflet-zoom-hide"
         var svg = d3.select(map.getPanes().overlayPane).append("svg"),
             g = svg.append("g").attr("class", "leaflet-zoom-hide"),
-            g1 = d3.select(map.getPanes().overlayPane).append("svg").attr("class", "circle-layer");
+            svg1 = d3.select(map.getPanes().overlayPane).append("svg").attr("class", "circle-layer"),
+            g1 = svg1.append("g").attr("class", "inner-CL");
 
         // This takes the path and fits the projection on it using the function below
         var transform = d3.geoTransform({point: projectPoint}),
@@ -78,7 +115,7 @@
             .enter().append("circle");
 
         // Selector. Selects all the circle elements in the circle-layer div
-        const allCircles = document.querySelectorAll(".circle-layer > circle");
+        const allCircles = document.querySelectorAll(".inner-CL > circle");
         //allCircles[0].classList.add("class" + 1);
         console.log("next is selector");
 
@@ -97,7 +134,7 @@
             }
         }
 
-        g1.attr("width", 2000)
+        svg1.attr("width", 2000)
         .attr("height", 2000);
 
         map.on("viewreset", reset);
@@ -112,8 +149,8 @@
 
                 svg.attr("width", 10000)
                     .attr("height", 10000)
-                    //.attr("width", bottomRight[0] - topLeft[0])
-                    //.attr("height", bottomRight[1] - topLeft[1])
+                    .attr("width", bottomRight[0] - topLeft[0])
+                    .attr("height", bottomRight[1] - topLeft[1])
                     .style("left", topLeft[0] + "px")
                     .style("top", topLeft[1] + "px")
                     .attr("d", function (d) {
@@ -124,12 +161,14 @@
                     .attr("fill", "transparent");
 
                 // THIS IS THE STYLE FOR THE CIRCLE LAYER
-                //g1.style("left", topLeft[0] + "px")
-                //    .style("top", topLeft[1] + "px");
+                svg1.style("left", topLeft[0] + "px")
+                    .style("top", topLeft[1] + "px");
 
                 g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
 
-                //g1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")")
+                g1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+
+                //svg1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")")
 
                 feature.attr("d", path)
                     .on("mouseover", function(d) {
@@ -139,7 +178,7 @@
                         d3.select(this).style("fill", d => "transparent");
                     });
 
-                const allCircles = document.querySelectorAll(".circle-layer > circle");
+                const allCircles = document.querySelectorAll(".inner-CL > circle");
                 for(i = 0; i < coordinates.length; i++) {
                             allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
                             allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
@@ -151,6 +190,8 @@
                 var point = map.latLngToLayerPoint(new L.LatLng(y, x));
                 this.stream.point(point.x, point.y);
             }
+
+
 
         }
 
