@@ -140,30 +140,17 @@
         .attr("height", 2000);
 
 
-
-///******************************************************
-
-
-
-
+        // The following code adds a boundary box around all the dots in d3
+        /*
         var minLatSoFar = coordinates[0].latitude,
             maxLatSoFar = coordinates[0].latitude,
             minLongSoFar = coordinates[0].longitude,
             maxLongSoFar = coordinates[0].longitude;
 
-        var circleMarker = L.circleMarker([minLatSoFar, minLongSoFar], {
-            color: "red",
-            radius: 3
-        }).addTo(map);
-
-        console.log("first one " + minLatSoFar);
-
         var i;
         for(i = 0; i < coordinates.length; i++) {
             if(parseInt(coordinates[i].latitude) < minLatSoFar) {
-                console.log("i: " + i + ": " + minLatSoFar);
                 minLatSoFar = coordinates[i].latitude;
-                console.log("i2: " + i + ": " + minLatSoFar);
             }
             if(parseInt(coordinates[i].latitude) > maxLatSoFar) {
                 maxLatSoFar = coordinates[i].latitude;
@@ -176,44 +163,13 @@
             }
         }
 
-        var circleMarker = L.circleMarker([37, -109.05], {
-            color: "red",
-            radius: 3
-        }).addTo(map);
-
-        var circleMarker = L.circleMarker([41, -109.03], {
-            color: "blue",
-            radius: 3
-        }).addTo(map);
-
-        var circleMarker = L.circleMarker([41, -102.05], {
-            color: "green",
-            radius: 5
-        }).addTo(map);
-
-
-
-
-
-
-
-        //var minLat = d3.min(coordinates, function(d) { return parse(d.latitude); }),
-        //    maxLat = d3.max(coordinates, function(d) { return parseInt(d.latitude); }),
-        //    minLong = d3.min(coordinates, function(d) { return parseInt(d.longitude); }),
-        //    maxLong = d3.max(coordinates, function(d) { return parseInt(d.longitude); });
-        var testing = 3;
-
-        console.log("type is: " + typeof minLatSoFar);
         var latlngs = [[parseFloat(minLatSoFar), parseFloat(minLongSoFar)],
             [parseFloat(maxLatSoFar), parseFloat(minLongSoFar)],
             [parseFloat(maxLatSoFar), parseFloat(maxLongSoFar)],
             [parseFloat(minLatSoFar), parseFloat(maxLongSoFar)]];
-        //var latlngs = [[minLatSoFar, minLongSoFar], [maxLatSoFar, minLongSoFar]];
-        //var latlngs = [[-4.036, -109.05],[41, -109.03],[30.168, -102.05],[-4.036, -102.04]];
 
         var polygon = L.polygon(latlngs, {color: 'red'}).addTo(map);
-
-//******************************************************
+        */
 
 
 
