@@ -137,7 +137,8 @@
 
         // TODO when you zoom in too much this isnt big enought. Need to calculate and update.
         svg1.attr("width", 2000)
-        .attr("height", 2000);
+        .attr("height", 2000)
+        .attr("pointer-events", "none");
 
 
         // The following code adds a boundary box around all the dots in d3
@@ -210,6 +211,23 @@
                     })
                     .on("mouseout", function(d) {
                         d3.select(this).style("fill", d => "transparent");
+                    })
+                    .on("click", function(d) {
+                        //console.log("STINKY");
+                        /*map.fitBounds([ [40.712, -74.227], [40.774, -74.125] ], {
+                            //paddingTopLeft: [200, 300],
+                            'animate': true,
+                            'duration': 2
+                        });*/
+
+                        //map.panBy([200, 300]);
+                        //map.flyTo([13.87992, 45.9791], 12);
+
+                        map.flyTo([13.87992, 45.9791], 10, {
+                            animate: true,
+                            duration: 2 // in seconds
+                        });
+
                     });
 
                 const allCircles = document.querySelectorAll(".inner-CL > circle");
