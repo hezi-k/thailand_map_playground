@@ -47,11 +47,13 @@
             console.log("This is the callback function"),
             console.log("callback2")
         ),
-        d3.csv("coordinatesJan28.csv")
-    ]).then( ([mapData ,coordinates]) => {
+        d3.csv("coordinatesJan28.csv"),
+        d3.csv("coordinatesJan29.csv"),
+        d3.csv("coordinatesJan30.csv")
+    ]).then( ([mapData ,coordinates, coordinates29, coordinates30]) => {
         coordBox(coordinates),
         createMap(mapData, coordinates),
-            test(mapData, coordinates),
+            test(mapData, coordinates, coordinates29, coordinates30),
             callback()
 
     })
@@ -96,7 +98,9 @@
         console.log("This is the callback function");
     }
 
-    function test(mapData, coordinates) {
+    function test(mapData, coordinates, coordinates29, coordinates30) {
+
+        document.addEventListener('keypress', logKey);
 
         var map = new L.Map("map", {center: [13.7, 100.5], zoom: 5, minZoom: 4})
             .addLayer(new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"));
@@ -129,6 +133,7 @@
         // Sets all the attributes for each circle element
         for(var i = 0; i < coordinates.length; i++) {
             if(coordinates[i].latitude > 5 && coordinates[i].latitude < 20) {
+
                 if (coordinates[i].longitude > 98 && coordinates[i].longitude < 105) {
                     allCircles[i].classList.add("class" + i);
                     allCircles[i].setAttribute("r", 3)
@@ -137,6 +142,9 @@
                     allCircles[i].setAttribute("fill", "#FFD061");
                     allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
                     allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
+                }
+                if(i==100) {
+                    allCircles[i].setAttribute("r", 10);
                 }
             }
         }
@@ -207,15 +215,63 @@
 
         function onEachFeature(feature, layer) {
             layer.on({
-
                 click: zoomToFeature
             });
         }
 
         function zoomToFeature(e) {
             map.flyToBounds(e.target.getBounds());
+            var j;
+            console.log("starting zoom");
+            for(j = 1; j < coordinates.length; j++) {
+                console.log("Is it inside? " + d3.geoContains(states[1], [coordinates[j].latitude, coordinates[j].longitude]));
+                // *** This function does not work
+            }
+
+            console.log(states[1]);
         }
 
+        function logKey(e) {
+            //TODO Keep track of the current data variable. Then go between dates for a set number of days you set
+            //log.textContent += ` ${e.code}`;
+            console.log("keypressed ")
+
+            const myNode = document.getElementsByClassName("inner-CL");
+            var i;
+            for(i = 0; i < coordinates.length; i++) {
+                allCircles[i].remove();
+            }
+
+
+            g1.selectAll("circle")
+                .data(coordinates29)
+                .enter().append("circle");
+
+            console.log("checkpointcheckpoint");
+            // Selector. Selects all the circle elements in the circle-layer div
+            const allCircles1 = document.querySelectorAll(".inner-CL > circle");
+            //allCircles[0].classList.add("class" + 1);
+            console.log("next is selector");
+
+            // Sets all the attributes for each circle element
+            for(var i = 0; i < coordinates29.length; i++) {
+                if(coordinates29[i].latitude > 5 && coordinates29[i].latitude < 20) {
+
+                    if (coordinates29[i].longitude > 98 && coordinates29[i].longitude < 105) {
+                        allCircles1[i].classList.add("class" + i);
+                        allCircles1[i].setAttribute("r", 3)
+                        allCircles1[i].setAttribute("stroke-width", 1);
+                        allCircles1[i].setAttribute("stroke", "#4F442B");
+                        allCircles1[i].setAttribute("fill", "#FFD061");
+                        allCircles1[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates29[i].latitude, coordinates29[i].longitude)).x);
+                        allCircles1[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates29[i].latitude, coordinates29[i].longitude)).y);
+                    }
+                }
+            }
+
+
+
+        }
 
         map.on("zoom", reset);
         reset();
