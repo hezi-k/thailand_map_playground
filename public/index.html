@@ -224,7 +224,8 @@
             var j;
             console.log("starting zoom");
             for(j = 1; j < coordinates.length; j++) {
-                console.log("Is it inside? " + d3.geoContains(states[1], [coordinates[j].latitude, coordinates[j].longitude]));
+                //console.log("Is it inside? " + d3.geoContains(states[1], [coordinates[j].latitude, coordinates[j].longitude]));
+                // Need to do projections on the province
                 // *** This function does not work
             }
 
