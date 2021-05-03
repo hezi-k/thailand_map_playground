@@ -223,13 +223,19 @@
             map.flyToBounds(e.target.getBounds());
             var j;
             console.log("starting zoom");
+            //console.log(states[1]);
+            console.log(e.target.feature);
+            // needs to be long, lat
+            console.log("Is it inside? " + d3.geoContains(e.target.feature, [coordinates[100].longitude, coordinates[100].latitude]));
+
             for(j = 1; j < coordinates.length; j++) {
                 //console.log("Is it inside? " + d3.geoContains(states[1], [coordinates[j].latitude, coordinates[j].longitude]));
                 // Need to do projections on the province
                 // *** This function does not work
-            }
+               // console.log("Is it inside? J: " + j + ": " + d3.geoContains(states[1], [coordinates[j].longitude, coordinates[j].latitude]));
+                //console.log("Is it inside? " + d3.geoContains(e.target, [coordinates[j].longitude, coordinates[j].latitude]));
 
-            console.log(states[1]);
+            }
         }
 
         function logKey(e) {
@@ -378,7 +384,14 @@ function createMap(mapData, coordinates) {
             .attr("d", function(d) { return path(d) })
             .attr("stroke-width", 2)
             .attr("stroke", "#ffffff")
-            .attr("fill", d => "blue");
+            .attr("fill", function(d) {
+                if(d3.geoContains(path(d), [proj([100.039, 19.498])[0], proj([100.039, 19.498])[1]])) {
+                    return 'red';
+                }
+                else {
+                    return 'purple';
+                }
+            });
 
 
     //THIS PUTS THE DOTS ON THE MAP
