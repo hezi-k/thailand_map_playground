@@ -322,7 +322,9 @@
                     })
                     .on("click", function(d) {
                         //console.log("STINKY");
-                        map.flyToBounds(path.bounds(d), {
+                        console.log(d3.select(this)._groups[0][0].__data__);
+                        console.log(path.bounds(d3.select(this)._groups[0][0].__data__));
+                        map.flyToBounds(path, {
                             //paddingTopLeft: [200, 300],
                             'animate': true,
                             'duration': 2
