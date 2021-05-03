@@ -126,13 +126,16 @@
         for (var i = 0; i < coordinates.length; i++) {
             if (coordinates[i].latitude > 5 && coordinates[i].latitude < 20) {
                 if (coordinates[i].longitude > 98 && coordinates[i].longitude < 105) {
-                    allCircles[i].classList.add("class" + i);
+                    allCircles[i].classList.add(i);
                     allCircles[i].setAttribute("r", 4)
                     allCircles[i].setAttribute("stroke-width", 1);
                     allCircles[i].setAttribute("stroke", "#4F442B");
                     allCircles[i].setAttribute("fill", "#FFD061");
                     allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
                     allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
+                    allCircles[i].onclick = function() {
+                        console.log(this)
+                    };
                 }
             }
         }
@@ -205,10 +208,11 @@
             g1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
 
             g1.attr("d", coordinates)
-                .on("click", function() {
+                /*.on("click", function() {
                     d3.select(this).style("fill", "#f90")
                     console.log(d3.select(this))
-                })
+                    // log daynight
+                })*/
                 .on("mouseover", function(d) {
                     d3.select(this).style("fill", "#f90");
                 });
