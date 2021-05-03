@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
+    <meta charset="utf-8"/>
     <title>Thailand Map Data Visualisation</title>
 
     <script src="https://d3js.org/d3.v6.min.js"></script>
@@ -9,7 +9,7 @@
     <script src="https://d3js.org/d3-geo-projection.v3.min.js"></script>
     <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
     <script src="js/map.js"></script>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css"/>
     <style>
         #map {
             width: 960px;
@@ -19,7 +19,7 @@
 </head>
 <body>
 
- <div id="map"></div>
+<div id="map"></div>
 
 <svg></svg>
 
@@ -41,9 +41,9 @@
             console.log("callback2")
         ),
         d3.csv("coordinatesJan28.csv")
-    ]).then( ([mapData ,coordinates]) => {
+    ]).then(([mapData, coordinates]) => {
         coordBox(coordinates),
-        createMap(mapData, coordinates),
+            //createMap(mapData, coordinates),
             test(mapData, coordinates),
             callback()
 
@@ -52,7 +52,9 @@
 
     function coordBox(coordinates) {
 
-        console.log("min in a something: " + d3.min(coordinates, function(d) { return parseFloat(d.latitude); }));
+        console.log("min in a something: " + d3.min(coordinates, function (d) {
+            return parseFloat(d.latitude);
+        }));
 
         var minLatSoFar = coordinates[0].latitude,
             maxLatSoFar = coordinates[0].latitude,
@@ -62,19 +64,19 @@
         console.log("first one " + minLatSoFar);
 
         var i;
-        for(i = 0; i < coordinates.length; i++) {
-            if(parseInt(coordinates[i].latitude) < minLatSoFar) {
+        for (i = 0; i < coordinates.length; i++) {
+            if (parseInt(coordinates[i].latitude) < minLatSoFar) {
                 console.log("i: " + i + ": " + minLatSoFar);
                 minLatSoFar = coordinates[i].latitude;
                 console.log("i2: " + i + ": " + minLatSoFar);
             }
-            if(parseInt(coordinates[i].latitude) > maxLatSoFar) {
+            if (parseInt(coordinates[i].latitude) > maxLatSoFar) {
                 maxLatSoFar = coordinates[i].latitude;
             }
-            if(parseInt(coordinates[i].longitude) < minLongSoFar) {
+            if (parseInt(coordinates[i].longitude) < minLongSoFar) {
                 minLongSoFar = coordinates[i].longitude;
             }
-            if(parseInt(coordinates[i].longitude) > maxLongSoFar) {
+            if (parseInt(coordinates[i].longitude) > maxLongSoFar) {
                 maxLongSoFar = coordinates[i].longitude;
             }
         }
@@ -113,7 +115,7 @@
         // Creates all the circle elements in the circle-layer div
         g1.selectAll("circle")
             .data(coordinates)
-            .enter().append("circle");
+            .enter().append("circle")
 
         // Selector. Selects all the circle elements in the circle-layer div
         const allCircles = document.querySelectorAll(".inner-CL > circle");
@@ -121,11 +123,11 @@
         console.log("next is selector");
 
         // Sets all the attributes for each circle element
-        for(var i = 0; i < coordinates.length; i++) {
-            if(coordinates[i].latitude > 5 && coordinates[i].latitude < 20) {
+        for (var i = 0; i < coordinates.length; i++) {
+            if (coordinates[i].latitude > 5 && coordinates[i].latitude < 20) {
                 if (coordinates[i].longitude > 98 && coordinates[i].longitude < 105) {
                     allCircles[i].classList.add("class" + i);
-                    allCircles[i].setAttribute("r", 3)
+                    allCircles[i].setAttribute("r", 4)
                     allCircles[i].setAttribute("stroke-width", 1);
                     allCircles[i].setAttribute("stroke", "#4F442B");
                     allCircles[i].setAttribute("fill", "#FFD061");
@@ -137,7 +139,7 @@
 
         // TODO when you zoom in too much this isnt big enought. Need to calculate and update.
         svg1.attr("width", 2000)
-        .attr("height", 2000);
+            .attr("height", 2000);
 
 
         // The following code adds a boundary box around all the dots in d3
@@ -174,113 +176,125 @@
         map.on("viewreset", reset);
         reset();
 
-            // This function runs on zoom. It needs to redraw the path and dots and set the svg sizes
-            function reset() {
-                console.log("Starting reset");
-                var bounds = path.bounds(mapData),
-                    topLeft = bounds[0],
-                    bottomRight = bounds[1];
+        // This function runs on zoom. It needs to redraw the path and dots and set the svg sizes
+        function reset() {
+            console.log("Starting reset");
+            var bounds = path.bounds(mapData),
+                topLeft = bounds[0],
+                bottomRight = bounds[1];
 
-                svg.attr("width", 10000)
-                    .attr("height", 10000)
-                    .attr("width", bottomRight[0] - topLeft[0])
-                    .attr("height", bottomRight[1] - topLeft[1])
-                    .style("left", topLeft[0] + "px")
-                    .style("top", topLeft[1] + "px")
-                    .attr("d", function (d) {
-                        return path(d)
-                    })
-                    .attr("stroke-width", 2)
-                    .attr("stroke", "blue")
-                    .attr("fill", "transparent");
+            svg.attr("width", 10000)
+                .attr("height", 10000)
+                .attr("width", bottomRight[0] - topLeft[0])
+                .attr("height", bottomRight[1] - topLeft[1])
+                .style("left", topLeft[0] + "px")
+                .style("top", topLeft[1] + "px")
+                .attr("d", function (d) {
+                    return path(d)
+                })
+                .attr("stroke-width", 2)
+                .attr("stroke", "blue")
+                .attr("fill", "transparent");
 
-                // THIS IS THE STYLE FOR THE CIRCLE LAYER
-                svg1.style("left", topLeft[0] + "px")
-                    .style("top", topLeft[1] + "px");
+            // THIS IS THE STYLE FOR THE CIRCLE LAYER
+            svg1.style("left", topLeft[0] + "px")
+                .style("top", topLeft[1] + "px");
 
-                g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+            g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
 
-                g1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+            g1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
 
-                //svg1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")")
+            g1.attr("d", coordinates)
+                .on("click", function() {
+                    d3.select(this).style("fill", "#f90")
+                    console.log(d3.select(this))
+                })
+                .on("mouseover", function(d) {
+                    d3.select(this).style("fill", "#f90");
+                });
 
-                feature.attr("d", path)
-                    .on("mouseover", function(d) {
-                        d3.select(this).style("fill", d => "blue");
-                    })
-                    .on("mouseout", function(d) {
-                        d3.select(this).style("fill", d => "transparent");
-                    });
+            //svg1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")")
 
-                const allCircles = document.querySelectorAll(".inner-CL > circle");
-                for(i = 0; i < coordinates.length; i++) {
-                            allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
-                            allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
-                }
+            feature.attr("d", path)
+                .on("mouseover", function (d) {
+                    d3.select(this).style("fill", d => "blue");
+                })
+                .on("mouseout", function (d) {
+                    d3.select(this).style("fill", d => "transparent");
+                });
+
+            const allCircles = document.querySelectorAll(".inner-CL > circle");
+            for (i = 0; i < coordinates.length; i++) {
+                allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
+                allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
             }
-
-
-            function projectPoint(x, y) {
-                var point = map.latLngToLayerPoint(new L.LatLng(y, x));
-                this.stream.point(point.x, point.y);
-            }
-
-
-
         }
 
 
+        function projectPoint(x, y) {
+            var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+            this.stream.point(point.x, point.y);
+        }
 
 
+    }
 
-function createMap(mapData, coordinates) {
 
-    console.log("Checkpoint 6");
+    function createMap(mapData, coordinates) {
 
-    console.log(mapData)
-    console.log(coordinates)
+        console.log("Checkpoint 6");
 
-    var svg = d3.select("body").append("svg")
-        .attr("width", width)
-        .attr("height", height);
+        console.log(mapData)
+        console.log(coordinates)
 
-    var g = svg.append('g');
-    var mapLayer = g.append('g')
-        .classed('map-layer', true);
+        var svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height);
 
-    var circleLayer = g.append('g')
-        .classed('circle-layer', true);
+        var g = svg.append('g');
+        var mapLayer = g.append('g')
+            .classed('map-layer', true);
 
-    let proj = d3.geoMercator()
-        .translate([250, 250])
-        .scale(2000)
-        .rotate([-100.6331, -13.2])
+        var circleLayer = g.append('g')
+            .classed('circle-layer', true);
 
-    let path = d3.geoPath()
-        .projection(proj)
+        let proj = d3.geoMercator()
+            .translate([250, 250])
+            .scale(2000)
+            .rotate([-100.6331, -13.2])
 
-    mapLayer.selectAll("path")
-        .data(mapData.features)
-        .enter()
-        .append("path")
-            .attr("d", function(d) { return path(d) })
+        let path = d3.geoPath()
+            .projection(proj)
+
+        mapLayer.selectAll("path")
+            .data(mapData.features)
+            .enter()
+            .append("path")
+            .attr("d", function (d) {
+                return path(d)
+            })
             .attr("stroke-width", 2)
             .attr("stroke", "#ffffff")
             .attr("fill", d => "blue");
 
 
-    //THIS PUTS THE DOTS ON THE MAP
-     circleLayer.selectAll("circle")
-         .data(coordinates)
-         .enter()
-         .append("circle")
-             .attr("r", 3)
-             .attr("cx", d => proj([+d.longitude, +d.latitude])[0])
-             .attr("cy", d => proj([+d.longitude, +d.latitude])[1])
-             .attr("stroke-width", 1)
-             .attr("stroke", "#4F442B")
-             .attr("fill", function() { return "#FFD061" });
+        //THIS PUTS THE DOTS ON THE MAP
+        circleLayer.selectAll("circle")
+            .data(coordinates)
+            .enter()
+            .append("circle")
+            .attr("r", 3)
+            .attr("cx", d => proj([+d.longitude, +d.latitude])[0])
+            .attr("cy", d => proj([+d.longitude, +d.latitude])[1])
+            .attr("stroke-width", 1)
+            .attr("stroke", "#4F442B")
+            .attr("fill", function () { return "#FFD061"})
+            .on("mouseover", mouseover);
 
+        function mouseover(d) {
+            d3.select(this).style('fill', '#f90');
+            console.log("hello")
+        }
 
 
 //    d3.csv("coordinates.csv", function(fireData) {
@@ -299,20 +313,18 @@ function createMap(mapData, coordinates) {
 //                .attr("fill", function() { return "#FFD061" });
 //    });
 
-    // d3.select("svg")
-    //     .selectAll("path")
-    //     .data(mapData.features)
-    //     .enter()
-    //     .append("path")
-    //         .attr("d", path)
-    //         .attr("d", function(d) { return path(d) })
-    //         .attr("stroke-width", 1)
-    //         .attr("stroke", "#ffffff")
-    //         .style("fill", function() { return "#FFD061" });
+        // d3.select("svg")
+        //     .selectAll("path")
+        //     .data(mapData.features)
+        //     .enter()
+        //     .append("path")
+        //         .attr("d", path)
+        //         .attr("d", function(d) { return path(d) })
+        //         .attr("stroke-width", 1)
+        //         .attr("stroke", "#ffffff")
+        //         .style("fill", function() { return "#FFD061" });
 
-}
-
-
+    }
 
 
 </script>
