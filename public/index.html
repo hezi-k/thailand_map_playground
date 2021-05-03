@@ -102,7 +102,7 @@
 
         document.addEventListener('keypress', logKey);
 
-        var map = new L.Map("map", {center: [13.7, 100.5], zoom: 5, minZoom: 4})
+        var map = new L.Map("map", {center: [13.7, 100.5], zoom: 5, minZoom: 4, maxZoom: 12})
             .addLayer(new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"));
 
         // Finds the overlayPane div and places 2 svgs inside. The second has a class name of "circle-layer"
@@ -133,7 +133,6 @@
         // Sets all the attributes for each circle element
         for(var i = 0; i < coordinates.length; i++) {
             if(coordinates[i].latitude > 5 && coordinates[i].latitude < 20) {
-
                 if (coordinates[i].longitude > 98 && coordinates[i].longitude < 105) {
                     allCircles[i].classList.add("class" + i);
                     allCircles[i].setAttribute("r", 3)
@@ -290,6 +289,7 @@
                     topLeft = bounds[0],
                     bottomRight = bounds[1];
 
+                // TODO fix this width and height
                 svg.attr("width", 10000)
                     .attr("height", 10000)
                     .attr("width", bottomRight[0] - topLeft[0])
@@ -304,8 +304,13 @@
                     .attr("fill", "transparent");
 
                 // THIS IS THE STYLE FOR THE CIRCLE LAYER
+                // lat is between 5-20
+                // long is between 98 and 105
                 svg1.style("left", topLeft[0] + "px")
-                    .style("top", topLeft[1] + "px");
+                    .style("top", topLeft[1] + "px")
+                    .attr("width", 2000*map.getZoom())
+                    .attr("height", 2000*map.getZoom());
+                console.log("zoom level: " + map.getZoom());
 
                 g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
 
