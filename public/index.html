@@ -100,6 +100,8 @@
 
     function test(mapData, coordinates, coordinates29, coordinates30) {
 
+
+
         document.addEventListener('keypress', logKey);
 
         var map = new L.Map("map", {center: [13.7, 100.5], zoom: 5, minZoom: 4, maxZoom: 12})
@@ -133,7 +135,7 @@
         // Sets all the attributes for each circle element
         for(var i = 0; i < coordinates.length; i++) {
             if(coordinates[i].latitude > 5 && coordinates[i].latitude < 20) {
-                if (coordinates[i].longitude > 98 && coordinates[i].longitude < 105) {
+                if (coordinates[i].longitude > 96 && coordinates[i].longitude < 105) {
                     allCircles[i].classList.add("class" + i);
                     allCircles[i].setAttribute("r", 3)
                     allCircles[i].setAttribute("stroke-width", 1);
@@ -141,9 +143,6 @@
                     allCircles[i].setAttribute("fill", "#FFD061");
                     allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
                     allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
-                }
-                if(i==100) {
-                    allCircles[i].setAttribute("r", 10);
                 }
             }
         }
@@ -226,7 +225,7 @@
             console.log(e.target.feature);
             // needs to be long, lat
             console.log("Is it inside? " + d3.geoContains(e.target.feature, [coordinates[100].longitude, coordinates[100].latitude]));
-
+            firesInsideProvince(e.target.feature);
             for(j = 1; j < coordinates.length; j++) {
                 //console.log("Is it inside? " + d3.geoContains(states[1], [coordinates[j].latitude, coordinates[j].longitude]));
                 // Need to do projections on the province
@@ -235,6 +234,26 @@
                 //console.log("Is it inside? " + d3.geoContains(e.target, [coordinates[j].longitude, coordinates[j].latitude]));
 
             }
+
+            function firesInsideProvince(feature) {
+                var allCoord = new Array;
+                var i;
+                for(i = 0; i < coordinates.length; i++) {
+                    if(d3.geoContains(feature, [coordinates[i].longitude, coordinates[i].latitude])) {
+                        console.log(allCircles[i]);
+                        allCircles[i].setAttribute("fill", "red");
+                        allCoord.push(coordinates[i]);
+                    }
+                }
+                console.log(allCoord);
+            }
+        }
+
+
+        var currentDate = "1/28/2021";
+        function getDataWithDate(date) {
+            var allData = new Array;
+
         }
 
         function logKey(e) {
@@ -261,9 +280,8 @@
 
             // Sets all the attributes for each circle element
             for(var i = 0; i < coordinates29.length; i++) {
-                if(coordinates29[i].latitude > 5 && coordinates29[i].latitude < 20) {
-
-                    if (coordinates29[i].longitude > 98 && coordinates29[i].longitude < 105) {
+                if(coordinates29[i].latitude > 2 && coordinates29[i].latitude < 25) {
+                    if (coordinates29[i].longitude > 90 && coordinates29[i].longitude < 110) {
                         allCircles1[i].classList.add("class" + i);
                         allCircles1[i].setAttribute("r", 3)
                         allCircles1[i].setAttribute("stroke-width", 1);
@@ -274,9 +292,6 @@
                     }
                 }
             }
-
-
-
         }
 
         map.on("zoom", reset);
