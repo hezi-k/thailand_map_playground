@@ -310,7 +310,6 @@
                     .style("top", topLeft[1] + "px")
                     .attr("width", 2000*map.getZoom())
                     .attr("height", 2000*map.getZoom());
-                console.log("zoom level: " + map.getZoom());
 
                 g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
 
@@ -329,7 +328,11 @@
                         //console.log("STINKY");
                         console.log(d3.select(this)._groups[0][0].__data__);
                         console.log(path.bounds(d3.select(this)._groups[0][0].__data__));
-                        map.flyToBounds(path.bounds(d3.select(this)._groups[0][0].__data__), {
+                        var testing = path.bounds(d3.select(this)._groups[0][0].__data__);
+                        var coord1 = map.unproject([testing[0][1], testing[0][0]], map.getZoom());
+                        var coord2 = map.unproject([testing[1][1], testing[1][0]], map.getZoom());
+                        // path.bounds(d3.select(this)._groups[0][0].__data__)
+                        map.flyToBounds([coord2, coord1], {
                             'animate': true,
                             'duration': 2
                         });
