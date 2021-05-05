@@ -10,6 +10,13 @@ app.get("/", (request, response) => {
 });
 
 function readFiles(dirname, onFileContent) {
+  fs.unlink("./public/data.json", (err) => {
+    if (err) {
+      console.error(err)
+      return
+    }
+  });
+  console.log("file deleted and ready to rewrite");
   fs.readdir(dirname, function(err, filenames) {
     if (err) {
       throw err;
