@@ -15,6 +15,10 @@
             width: 960px;
             height: 700px;
         }
+
+        table, th {
+            border: 1px solid black;
+        }
     </style>
 </head>
 <body>
@@ -23,7 +27,37 @@
 
 <svg></svg>
 
-<h2>Welcome</h2>
+<table id="wildfireInfo">
+    <tr>
+        <td><b>Acquired Date:</b></td>
+        <td id="acqDate"></td>
+    </tr>
+    <tr>
+        <td><b>Acquired Time:</b></td>
+        <td id="acqTime"></td>
+    </tr>
+    <tr>
+        <td><b>Latitude:</b></td>
+        <td id="latitude"></td>
+    </tr>
+    <tr>
+        <td><b>Longitude:</b></td>
+        <td id="longitude"></td>
+    </tr>
+    <tr>
+        <td><b>Day/Night:</b></td>
+        <td id="dOrN"></td>
+    </tr>
+    <tr>
+        <td><b>Satellite</b></td>
+        <td id="satellite"></td>
+    </tr>
+    <tr>
+        <td><b>Version:</b></td>
+        <td id="version"></td>
+    </tr>
+
+</table>
 
 
 <script>
@@ -122,6 +156,8 @@
         //allCircles[0].classList.add("class" + 1);
         console.log("next is selector");
 
+        const table = document.querySelector('#wildfireInfo')
+
         // Sets all the attributes for each circle element
         for (var i = 0; i < coordinates.length; i++) {
             if (coordinates[i].latitude > 5 && coordinates[i].latitude < 20) {
@@ -133,9 +169,35 @@
                     allCircles[i].setAttribute("fill", "#FFD061");
                     allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
                     allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
-                    allCircles[i].onclick = function() {
-                        console.log(this)
+                    allCircles[i].onclick = function () {
+
+                        wildfireID = this.className.animVal
+
+                        // console.log(wildfireID)
+
+                        console.log(coordinates[wildfireID])
+
+                        // console.log(document.querySelector('#acqDate').innerHTML)
+
+                        document.querySelector('#acqDate').innerHTML = coordinates[wildfireID].acq_date
+                        document.querySelector('#acqTime').innerHTML = coordinates[wildfireID].acq_time
+                        document.querySelector('#latitude').innerHTML = coordinates[wildfireID].latitude
+                        document.querySelector('#longitude').innerHTML = coordinates[wildfireID].longitude
+                        document.querySelector('#dOrN').innerHTML = coordinates[wildfireID].daynight
+                        document.querySelector('#satellite').innerHTML = coordinates[wildfireID].satellite
+                        document.querySelector('#version').innerHTML = coordinates[wildfireID].version
+
                     };
+                    allCircles[i].onmouseover = function () {
+
+                        d3.select(this).style('fill', '#F50D00')
+
+                    }
+                    allCircles[i].onmouseout = function () {
+
+                        d3.select(this).style('fill', '#FFD061')
+
+                    }
                 }
             }
         }
@@ -213,7 +275,7 @@
                     console.log(d3.select(this))
                     // log daynight
                 })*/
-                .on("mouseover", function(d) {
+                .on("mouseover", function (d) {
                     d3.select(this).style("fill", "#f90");
                 });
 
@@ -292,7 +354,9 @@
             .attr("cy", d => proj([+d.longitude, +d.latitude])[1])
             .attr("stroke-width", 1)
             .attr("stroke", "#4F442B")
-            .attr("fill", function () { return "#FFD061"})
+            .attr("fill", function () {
+                return "#FFD061"
+            })
             .on("mouseover", mouseover);
 
         function mouseover(d) {
