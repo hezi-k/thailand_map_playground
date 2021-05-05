@@ -216,7 +216,7 @@
 
                         wildfireID = this.className.animVal
 
-                        // console.log(wildfireID)
+                         console.log(wildfireID)
 
                         console.log(coordinates[wildfireID])
 
@@ -248,7 +248,7 @@
         // TODO when you zoom in too much this isnt big enought. Need to calculate and update.
         svg1.attr("width", 2000)
         .attr("height", 2000)
-        .attr("pointer-events", "none");
+        .attr("pointer-events", "all"); // TODO, this prevents us from hovering over provinces
 
 
         var states = [{
@@ -336,16 +336,46 @@
             allCircles = document.querySelectorAll(".inner-CL > circle");
 
             // Sets all the attributes for each circle element
+
             for(var i = 0; i < dataForDate.length; i++) {
                 if (dataForDate[i].latitude > 4 && dataForDate[i].latitude < 21) {
                     if (dataForDate[i].longitude > 95 && dataForDate[i].longitude < 107) {
-                        allCircles[i].classList.add("class" + i);
-                        allCircles[i].setAttribute("r", 3)
+                        allCircles[i].classList.add(i);
+                        allCircles[i].setAttribute("r", 4)
                         allCircles[i].setAttribute("stroke-width", 1);
                         allCircles[i].setAttribute("stroke", "#4F442B");
                         allCircles[i].setAttribute("fill", "#FFD061");
                         allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(dataForDate[i].latitude, dataForDate[i].longitude)).x);
                         allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(dataForDate[i].latitude, dataForDate[i].longitude)).y);
+                        allCircles[i].onclick = function () {
+                            console.log("testing");
+                            wildfireID = this.className.animVal
+
+                            console.log(wildfireID)
+
+                            console.log(dataForDate[wildfireID])
+
+                            // console.log(document.querySelector('#acqDate').innerHTML)
+
+                            document.querySelector('#acqDate').innerHTML = dataForDate[wildfireID].acq_date
+                            document.querySelector('#acqTime').innerHTML = dataForDate[wildfireID].acq_time
+                            document.querySelector('#latitude').innerHTML = dataForDate[wildfireID].latitude
+                            document.querySelector('#longitude').innerHTML = dataForDate[wildfireID].longitude
+                            document.querySelector('#dOrN').innerHTML = dataForDate[wildfireID].daynight
+                            document.querySelector('#satellite').innerHTML = dataForDate[wildfireID].satellite
+                            document.querySelector('#version').innerHTML = dataForDate[wildfireID].version
+
+                        };
+                        allCircles[i].onmouseover = function () {
+
+                            d3.select(this).style('fill', '#F50D00')
+
+                        }
+                        allCircles[i].onmouseout = function () {
+
+                            d3.select(this).style('fill', '#FFD061')
+
+                        }
                     }
                 }
             }
