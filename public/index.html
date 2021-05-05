@@ -164,8 +164,8 @@
 
         // Sets all the attributes for each circle element
         for(var i = 0; i < dataForDate.length; i++) {
-            if(dataForDate[i].latitude > 5 && dataForDate[i].latitude < 20) {
-                if (dataForDate[i].longitude > 96 && dataForDate[i].longitude < 105) {
+            if (dataForDate[i].latitude > 4 && dataForDate[i].latitude < 21) {
+                if (dataForDate[i].longitude > 95 && dataForDate[i].longitude < 107) {
                     allCircles[i].classList.add("class" + i);
                     allCircles[i].setAttribute("r", 3)
                     allCircles[i].setAttribute("stroke-width", 1);
@@ -269,8 +269,8 @@
 
             // Sets all the attributes for each circle element
             for(var i = 0; i < dataForDate.length; i++) {
-                if(dataForDate[i].latitude > 2 && dataForDate[i].latitude < 25) {
-                    if (dataForDate[i].longitude > 90 && dataForDate[i].longitude < 110) {
+                if (dataForDate[i].latitude > 4 && dataForDate[i].latitude < 21) {
+                    if (dataForDate[i].longitude > 95 && dataForDate[i].longitude < 107) {
                         allCircles[i].classList.add("class" + i);
                         allCircles[i].setAttribute("r", 3)
                         allCircles[i].setAttribute("stroke-width", 1);
@@ -310,14 +310,14 @@
                 // THIS IS THE STYLE FOR THE CIRCLE LAYER
                 // lat is between 5-20
                 // long is between 98 and 105
-                svg1.style("left", topLeft[0] + "px")
-                    .style("top", topLeft[1] + "px")
+                svg1//*********.style("left", topLeft[0] + "px")
+                    //*********.style("top", topLeft[1] + "px")
                     .attr("width", 2000*map.getZoom())
                     .attr("height", 2000*map.getZoom());
 
                 g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
 
-                g1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+                //*********g1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
 
                 //svg1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")")
 
