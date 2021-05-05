@@ -27,6 +27,15 @@
 <body>
 
  <div id="map"></div>
+ <div class="range-slider">
+     <input class="range-slider__range" type="range" value="0" min="0" max="7" step="1" id="mySlider">
+     <p>Value: <span id="demo"></span></p>
+ </div>
+ <script>
+     // Need to add event listener
+     //var rangeSlider = function() {
+
+ </script>
 
 <svg></svg>
 
@@ -43,15 +52,12 @@
 
     // Promise format does not work with d3 version 3
     Promise.all([
-        d3.json("thailand.json",
-            console.log("This is the callback function"),
-            console.log("callback2")
-        ),
-        d3.csv("coordinatesJan28.csv"),
+        d3.json("thailand.json"),
+        d3.csv("coordinates.csv"),
         d3.csv("coordinatesJan29.csv"),
         d3.csv("coordinatesJan30.csv")
     ]).then( ([mapData ,coordinates, coordinates29, coordinates30]) => {
-        coordBox(coordinates),
+        //coordBox(coordinates),
         createMap(mapData, coordinates),
             test(mapData, coordinates, coordinates29, coordinates30),
             callback()
@@ -59,7 +65,7 @@
     })
 
 
-    function coordBox(coordinates) {
+    /*function coordBox(coordinates) {
 
         console.log("min in a something: " + d3.min(coordinates, function(d) { return parseFloat(d.latitude); }));
 
@@ -92,7 +98,7 @@
         console.log("maxLat " + maxLatSoFar); // 9.558
         console.log("minLong " + minLongSoFar); // 100.039
         console.log("maxLong " + maxLongSoFar); // 99.995
-    }
+    }*/
 
     function callback() {
         console.log("This is the callback function");
@@ -102,7 +108,30 @@
 
 
 
-        document.addEventListener('keypress', logKey);
+        // New way to filter the data. Jan 28 is the first day in coordinates.csv
+        //var onDate = 0;
+        var allGroup = d3.map(coordinates, function(d){return(d.acq_date);});
+        let uniqueDates = allGroup.filter((item, i, ar) => ar.indexOf(item) === i);
+
+        var dataForDate = coordinates.filter(function(d) {
+            return d["acq_date"] === uniqueDates[0]
+        });
+
+
+        var slider = document.getElementById("mySlider"),
+            output = document.getElementById("demo");
+
+        slider.setAttribute("max", (uniqueDates.length - 1));
+
+        output.innerHTML = uniqueDates[slider.value];
+        slider.oninput = function () {
+            //console.log(document.getElementById("mySlider").value);
+            logKey();
+            output.innerHTML = uniqueDates[slider.value];
+
+        }
+
+        //document.addEventListener('keypress', logKey);
 
         var map = new L.Map("map", {center: [13.7, 100.5], zoom: 5, minZoom: 4, maxZoom: 12})
             .addLayer(new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"));
@@ -124,25 +153,26 @@
 
         // Creates all the circle elements in the circle-layer div
         g1.selectAll("circle")
-            .data(coordinates)
+            .data(dataForDate)
             .enter().append("circle");
+        g1.attr("id", "inner-CL");
 
         // Selector. Selects all the circle elements in the circle-layer div
-        const allCircles = document.querySelectorAll(".inner-CL > circle");
+        var allCircles = document.querySelectorAll(".inner-CL > circle");
         //allCircles[0].classList.add("class" + 1);
         console.log("next is selector");
 
         // Sets all the attributes for each circle element
-        for(var i = 0; i < coordinates.length; i++) {
-            if(coordinates[i].latitude > 5 && coordinates[i].latitude < 20) {
-                if (coordinates[i].longitude > 96 && coordinates[i].longitude < 105) {
+        for(var i = 0; i < dataForDate.length; i++) {
+            if(dataForDate[i].latitude > 5 && dataForDate[i].latitude < 20) {
+                if (dataForDate[i].longitude > 96 && dataForDate[i].longitude < 105) {
                     allCircles[i].classList.add("class" + i);
                     allCircles[i].setAttribute("r", 3)
                     allCircles[i].setAttribute("stroke-width", 1);
                     allCircles[i].setAttribute("stroke", "#4F442B");
                     allCircles[i].setAttribute("fill", "#FFD061");
-                    allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
-                    allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
+                    allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(dataForDate[i].latitude, dataForDate[i].longitude)).x);
+                    allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(dataForDate[i].latitude, dataForDate[i].longitude)).y);
                 }
             }
         }
@@ -152,37 +182,6 @@
         .attr("height", 2000)
         .attr("pointer-events", "none");
 
-
-        // The following code adds a boundary box around all the dots in d3
-        /*
-        var minLatSoFar = coordinates[0].latitude,
-            maxLatSoFar = coordinates[0].latitude,
-            minLongSoFar = coordinates[0].longitude,
-            maxLongSoFar = coordinates[0].longitude;
-
-        var i;
-        for(i = 0; i < coordinates.length; i++) {
-            if(parseInt(coordinates[i].latitude) < minLatSoFar) {
-                minLatSoFar = coordinates[i].latitude;
-            }
-            if(parseInt(coordinates[i].latitude) > maxLatSoFar) {
-                maxLatSoFar = coordinates[i].latitude;
-            }
-            if(parseInt(coordinates[i].longitude) < minLongSoFar) {
-                minLongSoFar = coordinates[i].longitude;
-            }
-            if(parseInt(coordinates[i].longitude) > maxLongSoFar) {
-                maxLongSoFar = coordinates[i].longitude;
-            }
-        }
-
-        var latlngs = [[parseFloat(minLatSoFar), parseFloat(minLongSoFar)],
-            [parseFloat(maxLatSoFar), parseFloat(minLongSoFar)],
-            [parseFloat(maxLatSoFar), parseFloat(maxLongSoFar)],
-            [parseFloat(minLatSoFar), parseFloat(maxLongSoFar)]];
-
-        var polygon = L.polygon(latlngs, {color: 'red'}).addTo(map);
-        */
 
         var states = [{
             "type": "Feature",
@@ -222,11 +221,11 @@
             var j;
             console.log("starting zoom");
             //console.log(states[1]);
-            console.log(e.target.feature);
+            //console.log(e.target.feature);
             // needs to be long, lat
-            console.log("Is it inside? " + d3.geoContains(e.target.feature, [coordinates[100].longitude, coordinates[100].latitude]));
+            //console.log("Is it inside? " + d3.geoContains(e.target.feature, [dataForDate[100].longitude, dataForDate[100].latitude]));
             firesInsideProvince(e.target.feature);
-            for(j = 1; j < coordinates.length; j++) {
+            for(j = 1; j < dataForDate.length; j++) {
                 //console.log("Is it inside? " + d3.geoContains(states[1], [coordinates[j].latitude, coordinates[j].longitude]));
                 // Need to do projections on the province
                 // *** This function does not work
@@ -238,57 +237,47 @@
             function firesInsideProvince(feature) {
                 var allCoord = new Array;
                 var i;
-                for(i = 0; i < coordinates.length; i++) {
-                    if(d3.geoContains(feature, [coordinates[i].longitude, coordinates[i].latitude])) {
-                        console.log(allCircles[i]);
+                for(i = 0; i < dataForDate.length; i++) {
+                    if(d3.geoContains(feature, [dataForDate[i].longitude, dataForDate[i].latitude])) {
+                        //console.log(allCircles[i]);
                         allCircles[i].setAttribute("fill", "red");
-                        allCoord.push(coordinates[i]);
+                        allCoord.push(dataForDate[i]);
                     }
                 }
-                console.log(allCoord);
+                //console.log(allCoord);
             }
-        }
-
-
-        var currentDate = "1/28/2021";
-        function getDataWithDate(date) {
-            var allData = new Array;
-
         }
 
         function logKey(e) {
             //TODO Keep track of the current data variable. Then go between dates for a set number of days you set
             //log.textContent += ` ${e.code}`;
-            console.log("keypressed ")
+            console.log("slider value: " + document.getElementById("mySlider").value);
 
-            const myNode = document.getElementsByClassName("inner-CL");
-            var i;
-            for(i = 0; i < coordinates.length; i++) {
-                allCircles[i].remove();
-            }
+            dataForDate = coordinates.filter(function(d) {
+                return d["acq_date"] === uniqueDates[document.getElementById("mySlider").value]
+            });
 
+           const node = document.getElementById("inner-CL");
+           node.innerHTML = "";
 
             g1.selectAll("circle")
-                .data(coordinates29)
+                .data(dataForDate)
                 .enter().append("circle");
 
-            console.log("checkpointcheckpoint");
             // Selector. Selects all the circle elements in the circle-layer div
-            const allCircles1 = document.querySelectorAll(".inner-CL > circle");
-            //allCircles[0].classList.add("class" + 1);
-            console.log("next is selector");
+            allCircles = document.querySelectorAll(".inner-CL > circle");
 
             // Sets all the attributes for each circle element
-            for(var i = 0; i < coordinates29.length; i++) {
-                if(coordinates29[i].latitude > 2 && coordinates29[i].latitude < 25) {
-                    if (coordinates29[i].longitude > 90 && coordinates29[i].longitude < 110) {
-                        allCircles1[i].classList.add("class" + i);
-                        allCircles1[i].setAttribute("r", 3)
-                        allCircles1[i].setAttribute("stroke-width", 1);
-                        allCircles1[i].setAttribute("stroke", "#4F442B");
-                        allCircles1[i].setAttribute("fill", "#FFD061");
-                        allCircles1[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates29[i].latitude, coordinates29[i].longitude)).x);
-                        allCircles1[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates29[i].latitude, coordinates29[i].longitude)).y);
+            for(var i = 0; i < dataForDate.length; i++) {
+                if(dataForDate[i].latitude > 2 && dataForDate[i].latitude < 25) {
+                    if (dataForDate[i].longitude > 90 && dataForDate[i].longitude < 110) {
+                        allCircles[i].classList.add("class" + i);
+                        allCircles[i].setAttribute("r", 3)
+                        allCircles[i].setAttribute("stroke-width", 1);
+                        allCircles[i].setAttribute("stroke", "#4F442B");
+                        allCircles[i].setAttribute("fill", "#FFD061");
+                        allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(dataForDate[i].latitude, dataForDate[i].longitude)).x);
+                        allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(dataForDate[i].latitude, dataForDate[i].longitude)).y);
                     }
                 }
             }
@@ -341,8 +330,8 @@
                     })
                     .on("click", function(d) {
                         //console.log("STINKY");
-                        console.log(d3.select(this)._groups[0][0].__data__);
-                        console.log(path.bounds(d3.select(this)._groups[0][0].__data__));
+                        //console.log(d3.select(this)._groups[0][0].__data__);
+                        //console.log(path.bounds(d3.select(this)._groups[0][0].__data__));
                         var testing = path.bounds(d3.select(this)._groups[0][0].__data__);
                         var coord1 = map.unproject([testing[0][1], testing[0][0]], map.getZoom());
                         var coord2 = map.unproject([testing[1][1], testing[1][0]], map.getZoom());
@@ -355,9 +344,9 @@
                     });
 
                 const allCircles = document.querySelectorAll(".inner-CL > circle");
-                for(i = 0; i < coordinates.length; i++) {
-                            allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).x);
-                            allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(coordinates[i].latitude, coordinates[i].longitude)).y);
+                for(i = 0; i < dataForDate.length; i++) {
+                            allCircles[i].setAttribute("cx", map.latLngToLayerPoint(new L.LatLng(dataForDate[i].latitude, dataForDate[i].longitude)).x);
+                            allCircles[i].setAttribute("cy", map.latLngToLayerPoint(new L.LatLng(dataForDate[i].latitude, dataForDate[i].longitude)).y);
                 }
             }
 
@@ -366,9 +355,6 @@
                 var point = map.latLngToLayerPoint(new L.LatLng(y, x));
                 this.stream.point(point.x, point.y);
             }
-
-
-
         }
 
 
@@ -379,8 +365,8 @@ function createMap(mapData, coordinates) {
 
     console.log("Checkpoint 6");
 
-    console.log(mapData)
-    console.log(coordinates)
+    //console.log(mapData)
+    //console.log(coordinates)
 
     var svg = d3.select("body").append("svg")
         .attr("width", width)
