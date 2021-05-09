@@ -408,14 +408,14 @@
                 // THIS IS THE STYLE FOR THE CIRCLE LAYER
                 // lat is between 5-20
                 // long is between 98 and 105
-                svg1//*********.style("left", topLeft[0] + "px")
-                    //*********.style("top", topLeft[1] + "px")
+                svg1.style("left", topLeft[0] + "px")
+                    .style("top", topLeft[1] + "px")
                     .attr("width", 2000*map.getZoom())
                     .attr("height", 2000*map.getZoom());
 
             g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
 
-                //*********g1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+                g1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
 
                 //svg1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")")
 
