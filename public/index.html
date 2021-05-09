@@ -248,7 +248,7 @@
         // TODO when you zoom in too much this isnt big enought. Need to calculate and update.
         svg1.attr("width", 2000)
         .attr("height", 2000)
-        .attr("pointer-events", "all"); // TODO, this prevents us from hovering over provinces
+        .attr("pointer-events", "none"); // TODO, this prevents us from hovering over provinces
 
 
         var states = [{
@@ -415,7 +415,8 @@
 
             g.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
 
-                g1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")");
+                g1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")")
+                    .attr("pointer-events", "all");;
 
                 //svg1.attr("transform", "translate(" + -topLeft[0] + "," + -topLeft[1] + ")")
 
@@ -431,13 +432,25 @@
                         //console.log(d3.select(this)._groups[0][0].__data__);
                         //console.log(path.bounds(d3.select(this)._groups[0][0].__data__));
                         var testing = path.bounds(d3.select(this)._groups[0][0].__data__);
+                        var testing2 = path.centroid(d3.select(this)._groups[0][0].__data__);
+
+                        console.log(testing2);
+                        allCircles[0].setAttribute("r", 7)
+                        allCircles[0].setAttribute("stroke-width", 1);
+                        allCircles[0].setAttribute("stroke", "#4F442B");
+                        allCircles[0].setAttribute("fill", "red");
+                        console.log(map.unproject(testing2, map.getZoom()));
+                        allCircles[0].setAttribute("cx", map.unproject(testing2, map.getZoom()).lat);
+                        allCircles[0].setAttribute("cy", map.unproject(testing2, map.getZoom()).lng);
+
+
                         var coord1 = map.unproject([testing[0][1], testing[0][0]], map.getZoom());
-                        var coord2 = map.unproject([testing[1][1], testing[1][0]], map.getZoom());
+                        //var coord2 = map.unproject([testing[1][1], testing[1][0]], map.getZoom());
                         // path.bounds(d3.select(this)._groups[0][0].__data__)
-                        map.flyToBounds([coord2, coord1], {
+                        /*map.flyToBounds([coord2, coord1], {
                             'animate': true,
                             'duration': 2
-                        });
+                        });*/
 
                     });
 
