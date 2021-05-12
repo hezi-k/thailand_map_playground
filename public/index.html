@@ -91,60 +91,13 @@
         d3.csv("coordinatesJan29.csv"),
         d3.csv("coordinatesJan30.csv")
     ]).then( ([mapData ,coordinates, coordinates29, coordinates30]) => {
-        //coordBox(coordinates),
         createMap(mapData, coordinates),
-            test(mapData, coordinates, coordinates29, coordinates30),
-            callback()
+            test(mapData, coordinates, coordinates29, coordinates30)
 
     })
 
 
-    /*function coordBox(coordinates) {
-
-        console.log("min in a something: " + d3.min(coordinates, function (d) {
-            return parseFloat(d.latitude);
-        }));
-
-        var minLatSoFar = coordinates[0].latitude,
-            maxLatSoFar = coordinates[0].latitude,
-            minLongSoFar = coordinates[0].longitude,
-            maxLongSoFar = coordinates[0].longitude;
-
-        console.log("first one " + minLatSoFar);
-
-        var i;
-        for (i = 0; i < coordinates.length; i++) {
-            if (parseInt(coordinates[i].latitude) < minLatSoFar) {
-                console.log("i: " + i + ": " + minLatSoFar);
-                minLatSoFar = coordinates[i].latitude;
-                console.log("i2: " + i + ": " + minLatSoFar);
-            }
-            if (parseInt(coordinates[i].latitude) > maxLatSoFar) {
-                maxLatSoFar = coordinates[i].latitude;
-            }
-            if (parseInt(coordinates[i].longitude) < minLongSoFar) {
-                minLongSoFar = coordinates[i].longitude;
-            }
-            if (parseInt(coordinates[i].longitude) > maxLongSoFar) {
-                maxLongSoFar = coordinates[i].longitude;
-            }
-        }
-
-        console.log("minLat " + minLatSoFar); // -0.824
-        console.log("maxLat " + maxLatSoFar); // 9.558
-        console.log("minLong " + minLongSoFar); // 100.039
-        console.log("maxLong " + maxLongSoFar); // 99.995
-    }*/
-
-    function callback() {
-        console.log("This is the callback function");
-    }
-
     function test(mapData, coordinates, coordinates29, coordinates30) {
-
-        console.log("starting here");
-        console.log(mapData.features[0]);
-
         // New way to filter the data. Jan 28 is the first day in coordinates.csv
         //var onDate = 0;
         var allGroup = d3.map(coordinates, function(d){return(d.acq_date);});
@@ -168,26 +121,75 @@
 
         }
 
-        //document.addEventListener('keypress', logKey);
-
         var map = new L.Map("map", {center: [13.7, 100.5], zoom: 5, minZoom: 4, maxZoom: 12})
             .addLayer(new L.TileLayer("http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"));
 
+
+        // Add provinces
+        var provinces = new Array;
+        var j;
+        for(j = 0; j < mapData.features.length; j++) {
+            provinces.push(mapData.features[j]);
+        }
+        L.geoJSON(provinces, {
+            style: {
+                    "color": "blue",
+                    "fillOpacity": "0"
+            },
+            onEachFeature: onEachFeature
+        }).addTo(map);
+
+        function onEachFeature(feature, layer) {
+            layer.on({
+                click: zoomToFeature
+            });
+        }
+
+        function zoomToFeature(e) {
+            map.flyToBounds(e.target.getBounds());
+            var j;
+            console.log("starting zoom");
+            //console.log(states[1]);
+            //console.log(e.target.feature);
+            // needs to be long, lat
+            //console.log("Is it inside? " + d3.geoContains(e.target.feature, [dataForDate[100].longitude, dataForDate[100].latitude]));
+            firesInsideProvince(e.target.feature);
+            for(j = 1; j < dataForDate.length; j++) {
+                //console.log("Is it inside? " + d3.geoContains(states[1], [coordinates[j].latitude, coordinates[j].longitude]));
+                // Need to do projections on the province
+                // *** This function does not work
+                // console.log("Is it inside? J: " + j + ": " + d3.geoContains(states[1], [coordinates[j].longitude, coordinates[j].latitude]));
+                //console.log("Is it inside? " + d3.geoContains(e.target, [coordinates[j].longitude, coordinates[j].latitude]));
+
+            }
+
+            function firesInsideProvince(feature) {
+                var allCoord = new Array;
+                var i;
+                for(i = 0; i < dataForDate.length; i++) {
+                    if(d3.geoContains(feature, [dataForDate[i].longitude, dataForDate[i].latitude])) {
+                        //console.log(allCircles[i]);
+                        allCircles[i].setAttribute("fill", "red");
+                        allCoord.push(dataForDate[i]);
+                    }
+                }
+                //console.log(allCoord);
+            }
+        }
+
+
+
+
         // Finds the overlayPane div and places 2 svgs inside. The second has a class name of "circle-layer"
         // There is also a g div in the first svg with a name of "leaflet-zoom-hide"
-        var //svg = d3.select(map.getPanes().overlayPane).append("svg"),
-            //g = svg.append("g").attr("class", "leaflet-zoom-hide"),
-            svg1 = d3.select(map.getPanes().overlayPane).append("svg").attr("class", "circle-layer"),
+        var svg1 = d3.select(map.getPanes().overlayPane).append("svg").attr("class", "circle-layer"),
             g1 = svg1.append("g").attr("class", "inner-CL");
 
         // This takes the path and fits the projection on it using the function below
         var transform = d3.geoTransform({point: projectPoint}),
             path = d3.geoPath().projection(transform);
 
-        /*var feature = g.selectAll("path")
-            .data(mapData.features)
-            .enter().append("path");
-*/
+
         // Creates all the circle elements in the circle-layer div
         g1.selectAll("circle")
             .data(dataForDate)
@@ -197,8 +199,6 @@
 
         // Selector. Selects all the circle elements in the circle-layer div
         var allCircles = document.querySelectorAll(".inner-CL > circle");
-        //allCircles[0].classList.add("class" + 1);
-        console.log("next is selector");
 
         const table = document.querySelector('#wildfireInfo')
 
@@ -252,61 +252,7 @@
         .attr("pointer-events", "none"); // TODO, this prevents us from hovering over provinces
 
 
-        var states = new Array;
-        var j;
-        for(j = 0; j < mapData.features.length; j++) {
-            states.push(mapData.features[j]);
-        }
-        console.log("here buddy");
-        console.log(states);
 
-        L.geoJSON(states, {
-            style: function(feature) {
-                switch (feature.properties.party) {
-                    case 'Republican': return {color: "#ff0000"};
-                    case 'Democrat':   return {color: "#0000ff"};
-                }
-            },
-            onEachFeature: onEachFeature
-        }).addTo(map);
-
-        function onEachFeature(feature, layer) {
-            layer.on({
-                click: zoomToFeature
-            });
-        }
-
-        function zoomToFeature(e) {
-            map.flyToBounds(e.target.getBounds());
-            var j;
-            console.log("starting zoom");
-            //console.log(states[1]);
-            //console.log(e.target.feature);
-            // needs to be long, lat
-            //console.log("Is it inside? " + d3.geoContains(e.target.feature, [dataForDate[100].longitude, dataForDate[100].latitude]));
-            firesInsideProvince(e.target.feature);
-            for(j = 1; j < dataForDate.length; j++) {
-                //console.log("Is it inside? " + d3.geoContains(states[1], [coordinates[j].latitude, coordinates[j].longitude]));
-                // Need to do projections on the province
-                // *** This function does not work
-               // console.log("Is it inside? J: " + j + ": " + d3.geoContains(states[1], [coordinates[j].longitude, coordinates[j].latitude]));
-                //console.log("Is it inside? " + d3.geoContains(e.target, [coordinates[j].longitude, coordinates[j].latitude]));
-
-            }
-
-            function firesInsideProvince(feature) {
-                var allCoord = new Array;
-                var i;
-                for(i = 0; i < dataForDate.length; i++) {
-                    if(d3.geoContains(feature, [dataForDate[i].longitude, dataForDate[i].latitude])) {
-                        //console.log(allCircles[i]);
-                        allCircles[i].setAttribute("fill", "red");
-                        allCoord.push(dataForDate[i]);
-                    }
-                }
-                //console.log(allCoord);
-            }
-        }
 
         function logKey(e) {
             //TODO Keep track of the current data variable. Then go between dates for a set number of days you set
