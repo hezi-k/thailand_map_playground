@@ -43,6 +43,9 @@
 
 <svg></svg>
 
+ <p>The name of the province is </p>
+ <p id="provinceName"></p>
+
 <table id="wildfireInfo">
     <tr>
         <td><b>Acquired Date:</b></td>
@@ -147,6 +150,8 @@
 
         function zoomToFeature(e) {
             map.flyToBounds(e.target.getBounds());
+            console.log("The name of the province is" + e.target.feature.properties.name);
+            document.querySelector('#provinceName').innerHTML = e.target.feature.properties.name;
             var j;
             console.log("starting zoom");
             //console.log(states[1]);
