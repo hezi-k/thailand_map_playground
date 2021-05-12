@@ -129,18 +129,37 @@
 
 
         // Add provinces
+
         var provinces = new Array;
         var j;
-        for(j = 0; j < mapData.features.length; j++) {
+        for (j = 0; j < mapData.features.length; j++) {
             provinces.push(mapData.features[j]);
         }
-        L.geoJSON(provinces, {
-            style: {
+
+        var geojson;
+        function addStates() {
+
+            geojson = L.geoJSON(provinces, {
+                style: style,
+                onEachFeature: onEachFeature
+            }).addTo(map);
+        }
+        addStates();
+
+        function style(feature) {
+            if (map.getZoom() > 9) {
+                return {
+                    "color": "blue",
+                    "weight" : "0",
+                    "fillOpacity": "0"
+                }
+            } else {
+                return {
                     "color": "blue",
                     "fillOpacity": "0"
-            },
-            onEachFeature: onEachFeature
-        }).addTo(map);
+                }
+            }
+        }
 
         function onEachFeature(feature, layer) {
             layer.on({
@@ -325,6 +344,11 @@
         }
 
         map.on("zoom", reset);
+
+        map.on("zoomend", function(){
+            geojson.removeFrom(map);
+            addStates();
+        });
         reset();
 
         // This function runs on zoom. It needs to redraw the path and dots and set the svg sizes
