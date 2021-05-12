@@ -170,13 +170,15 @@
         function zoomToFeature(e) {
             map.flyToBounds(e.target.getBounds());
             console.log("The name of the province is" + e.target.feature.properties.name);
+
+            // Need to reset and make all the dots yellow again.
+            for (var i = 0; i < dataForDate.length; i++) {
+                allCircles[i].setAttribute("fill", "#FFD061");
+            }
+
             document.querySelector('#provinceName').innerHTML = e.target.feature.properties.name;
             var j;
             console.log("starting zoom");
-            //console.log(states[1]);
-            //console.log(e.target.feature);
-            // needs to be long, lat
-            //console.log("Is it inside? " + d3.geoContains(e.target.feature, [dataForDate[100].longitude, dataForDate[100].latitude]));
             firesInsideProvince(e.target.feature);
             for(j = 1; j < dataForDate.length; j++) {
                 //console.log("Is it inside? " + d3.geoContains(states[1], [coordinates[j].latitude, coordinates[j].longitude]));
